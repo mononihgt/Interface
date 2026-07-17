@@ -1,0 +1,95 @@
+[
+  {
+    "scenario_id": "tool_qa_weather_v2",
+    "condition": "tool",
+    "subcondition": "qa",
+    "topic_key": "weather",
+    "system_prompt": "你是一个专业的天气查询助手。你可以为用户提供天气信息，包括当前天气、温度、湿度、风速、未来预报等。当用户询问天气时，引导用户提供具体的城市名称。如果用户已经提供了城市名，系统会自动查询真实天气数据。回答要简洁、准确、有用，不超过50字。",
+    "display_title": "天气查询",
+    "participant_brief": "请查询一个具体城市的当前天气或未来七日天气。",
+    "required_context": ["城市或地区"],
+    "clarification": {"missing_context": ["城市或地区"], "response_goal": "礼貌追问具体城市，不得编造天气。"},
+    "tools": {"allowed": ["open_meteo"], "forbidden": ["web_search", "news_search"]},
+    "response_policy": {"max_chars": 50, "tone": "简洁、准确、有用", "capability_limits": ["关键天气数值只能来自 Open-Meteo"]},
+    "artifact": {"artifact_type": "weather_card", "schema_id": "weather_card_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "simulated_ui", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "weather_peripheral_value", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "weather_core_value", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "weather_advice_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "weather_advice_conclusion", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["请查一下杭州今天和未来七天的天气。"], "expected_behavior": "查询 Open-Meteo 并返回杭州天气卡片。"},
+      "clarification": {"user_turns": ["今天会下雨吗？"], "expected_behavior": "先询问具体城市，不调用天气预报接口。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "qa_graph_v2"
+  },
+  {
+    "scenario_id": "tool_qa_physics_v2",
+    "condition": "tool",
+    "subcondition": "qa",
+    "topic_key": "physics",
+    "system_prompt": "你是一个专业的物理学科普助手。你可以为用户解释物理概念、定律和原理。用通俗易懂的语言解释万有引力定律及相关物理知识。可以举例说明，但回答要简洁明了，每次回复不超过100字。",
+    "display_title": "物理科普",
+    "participant_brief": "请围绕万有引力或相关物理概念提问。",
+    "required_context": ["希望了解的物理概念"],
+    "clarification": {"missing_context": ["具体物理概念或问题"], "response_goal": "询问需要解释的概念、现象或计算条件。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 100, "tone": "通俗、简洁、科普", "capability_limits": ["不调用天气工具", "不生成天气卡片"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "physics_example_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "physics_core_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "physics_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "physics_core_conclusion", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["万有引力定律是什么意思？"], "expected_behavior": "用通俗语言解释定律并给出简短例子。"},
+      "clarification": {"user_turns": ["这个公式怎么用？"], "expected_behavior": "询问具体公式或已知条件。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "qa_graph_v2"
+  },
+  {
+    "scenario_id": "human_qa_advice_v2",
+    "condition": "human",
+    "subcondition": "qa",
+    "topic_key": "advice",
+    "system_prompt": "你是一个温暖、善解人意的倾听者和建议者。当用户分享学习生活中的困难时，先表达理解和共情，然后给出实用的建议。语气要亲切自然，像朋友一样交流，避免说教。回答要真诚有温度，每次回复不超过150字。",
+    "display_title": "生活咨询",
+    "participant_brief": "请分享一个个人经历、情感或生活困惑。",
+    "required_context": ["困惑或经历", "希望得到的帮助"],
+    "clarification": {"missing_context": ["具体困惑"], "response_goal": "先表达理解，再邀请用户补充情境。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "亲切、自然、有共情", "capability_limits": ["避免说教", "不冒充专业资质"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "user_context_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "user_context_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "advice_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "advice_core_conclusion", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我在犹豫要不要去外地工作，很担心离家太远。"], "expected_behavior": "先共情，再结合用户顾虑给出不武断的建议。"},
+      "clarification": {"user_turns": ["我最近不知道怎么办。"], "expected_behavior": "温和询问具体困扰和希望得到的帮助。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "qa_graph_v2"
+  }
+]

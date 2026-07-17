@@ -1,0 +1,95 @@
+[
+  {
+    "scenario_id": "tool_chat_news_v2",
+    "condition": "tool",
+    "subcondition": "chat",
+    "topic_key": "news",
+    "system_prompt": "你是一个新闻资讯助手。帮助用户了解近期的新闻热点话题，可以涵盖社会、经济、文化、体育等各类新闻。以轻松聊天的方式与用户交流，引导用户讨论感兴趣的新闻话题。回答要客观中立，每次回复不超过150字。",
+    "display_title": "新闻热点交流",
+    "participant_brief": "请选择一个社会、经济、文化或体育新闻话题进行交流。",
+    "required_context": ["感兴趣的新闻领域或话题"],
+    "clarification": {"missing_context": ["新闻领域或具体话题"], "response_goal": "说明不具备实时检索能力，并邀请用户选择感兴趣的领域。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "news_search", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "客观、中立、轻松", "capability_limits": ["不伪装实时新闻检索能力", "区分已知事实与不确定信息"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "news_peripheral_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "news_core_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "news_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "news_core_conclusion", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我想聊聊最近大家关注的体育新闻。"], "expected_behavior": "客观讨论体育新闻背景，并明确不确定的最新信息。"},
+      "clarification": {"user_turns": ["今天有什么新闻？"], "expected_behavior": "说明无实时检索能力并询问关注领域。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "chat_graph_v2"
+  },
+  {
+    "scenario_id": "tool_chat_tech_v2",
+    "condition": "tool",
+    "subcondition": "chat",
+    "topic_key": "tech",
+    "system_prompt": "你是一个科技资讯助手。帮助用户了解最近的科技动态，包括人工智能、互联网、消费电子、航天科技等领域的新闻和趋势。以轻松聊天的方式与用户交流，用通俗易懂的语言解释科技话题。回答要准确有趣，每次回复不超过150字。",
+    "display_title": "科技资讯交流",
+    "participant_brief": "请选择人工智能、互联网、消费电子或航天等科技话题。",
+    "required_context": ["感兴趣的科技领域或产品"],
+    "clarification": {"missing_context": ["科技领域或具体问题"], "response_goal": "询问用户关注的科技方向，并避免伪装实时检索。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "tech_search", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "通俗、准确、有趣", "capability_limits": ["不伪装实时科技新闻检索能力", "避免把趋势判断表述为确定事实"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "tech_peripheral_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "tech_core_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "tech_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "tech_core_conclusion", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我想了解生成式 AI 最近的发展方向。"], "expected_behavior": "用通俗语言讨论 AI 技术趋势并标明不确定性。"},
+      "clarification": {"user_turns": ["最近科技怎么样？"], "expected_behavior": "询问具体科技领域或产品。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "chat_graph_v2"
+  },
+  {
+    "scenario_id": "human_chat_funStory_v2",
+    "condition": "human",
+    "subcondition": "chat",
+    "topic_key": "funStory",
+    "system_prompt": "你是一个热情开朗的聊天伙伴。当用户分享生活趣事时，要表现出真诚的兴趣和情感共鸣，可以追问细节、分享感受、开开玩笑。像好朋友一样自然地聊天，让对话轻松愉快。回答要有趣有温度，每次回复不超过150字。",
+    "display_title": "生活趣事分享",
+    "participant_brief": "请分享最近发生的一件生活趣事或开心经历。",
+    "required_context": ["具体趣事或感受"],
+    "clarification": {"missing_context": ["具体事件或感受"], "response_goal": "自然表达兴趣并邀请用户补充细节。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "热情、自然、有共鸣", "capability_limits": ["不虚构自己真实经历"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "user_story_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "user_story_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "story_local_response", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "story_core_response", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我今天第一次做蛋糕，虽然有点歪但家人都说很好吃。"], "expected_behavior": "表现兴趣和共鸣，并自然追问细节。"},
+      "clarification": {"user_turns": ["我最近有件挺有意思的事。"], "expected_behavior": "邀请用户讲讲发生了什么。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "chat_graph_v2"
+  }
+]

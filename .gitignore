@@ -1,0 +1,57 @@
+# Python environments and generated files
+.venv/
+venv/
+env/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Node.js dependencies and build output
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+deployment/*.env
+deployment/*.env.*
+deployment/**/*.env
+deployment/**/*.env.*
+!deployment/*.env.example
+!deployment/**/*.env.example
+
+# Runtime data and operator output
+backups/
+data/*
+!data/.gitkeep
+!data/audio/
+!data/exports/
+!data/logs/
+data/audio/*
+!data/audio/.gitkeep
+data/exports/*
+!data/exports/.gitkeep
+data/logs/*
+!data/logs/.gitkeep
+*.db
+*.db-shm
+*.db-wal
+
+# Local tooling and editor state
+.superpowers/
+.worktrees/
+.DS_Store
+.idea/
+.vscode/
+
+# Internal design and planning materials
+AGENTS.md
+CONTEXT.md
+DESIGN_*.md
+docs/superpowers/
+docs/plans/
+docs/specs/

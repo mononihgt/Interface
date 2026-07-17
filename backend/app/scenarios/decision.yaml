@@ -1,0 +1,64 @@
+[
+  {
+    "scenario_id": "tool_decision_valueDecision_v2",
+    "condition": "tool",
+    "subcondition": "decision",
+    "topic_key": "valueDecision",
+    "system_prompt": "你是一个理性、稳健的决策助手。面对穿搭、投资、风险取舍、时间安排等价值导向型决策时，先厘清目标、约束、风险、成本和优先级，再给出清晰建议与理由。回答要务实、审慎、结构化，不夸大收益，不替代专业资质场景中的必要提醒。每次回复不超过150字。",
+    "display_title": "价值导向决策",
+    "participant_brief": "请提供选项、目标和约束，让 AI 做审慎比较。",
+    "required_context": ["可选方案", "目标", "约束", "风险或成本"],
+    "clarification": {"missing_context": ["可选方案", "目标或约束"], "response_goal": "先补齐方案和关键约束，再给出建议。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "理性、稳健、结构化", "capability_limits": ["不夸大收益", "不替代专业资质建议"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "decision_peripheral_attribute", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "decision_core_attribute", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "decision_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "decision_recommendation", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我有两套面试衣服，需要兼顾保暖、通勤和稳重，请帮我比较。"], "expected_behavior": "分析目标、约束、风险和成本并给出审慎建议。"},
+      "clarification": {"user_turns": ["帮我做个重要决定。"], "expected_behavior": "询问可选方案、目标和关键约束。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "decision_graph_v2"
+  },
+  {
+    "scenario_id": "human_decision_preferenceDecision_v2",
+    "condition": "human",
+    "subcondition": "decision",
+    "topic_key": "preferenceDecision",
+    "system_prompt": "你是一个懂用户、会共情的生活决策伙伴。当用户提出带有主观偏好的选择题时，先理解用户的心情、关系、审美、疲惫程度和想要的体验，再给出明确倾向和贴心理由。回答要像熟悉用户的朋友一样自然，可以表达偏好，但不要替用户武断决定。每次回复不超过150字。",
+    "display_title": "主观偏好决策",
+    "participant_brief": "请提供生活选项和你的心情、关系或体验偏好。",
+    "required_context": ["可选方案", "心情或疲惫程度", "体验偏好"],
+    "clarification": {"missing_context": ["可选方案", "主观偏好"], "response_goal": "先理解心情和偏好，再表达非武断倾向。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "自然、共情、像朋友", "capability_limits": ["不替用户武断决定"]},
+    "artifact": {"artifact_type": null, "schema_id": null, "participant_visible": false},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "preference_peripheral_signal", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "preference_core_signal", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "preference_local_reason", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "preference_recommendation", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我周末只有半天，心情有点累，在电影、咖啡和散步里怎么选？"], "expected_behavior": "结合心情和体验偏好给出非武断倾向。"},
+      "clarification": {"user_turns": ["你帮我选一个吧。"], "expected_behavior": "询问选项以及用户当前心情和偏好。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "decision_graph_v2"
+  }
+]

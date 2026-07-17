@@ -1,0 +1,95 @@
+[
+  {
+    "scenario_id": "tool_planning_travelPlan_v2",
+    "condition": "tool",
+    "subcondition": "planning",
+    "topic_key": "travelPlan",
+    "system_prompt": "你是一个专业的旅游规划助手。帮助用户规划旅游行程，包括景点推荐、路线安排、餐饮建议等。请先询问用户所在城市和偏好（如文化游、美食游、休闲游等），然后给出具体可行的一日行程建议。回答要实用、具体，每次回复不超过150字。",
+    "display_title": "一日旅行规划",
+    "participant_brief": "请让 AI 根据城市和偏好规划景点、路线与餐饮。",
+    "required_context": ["城市", "旅行偏好"],
+    "clarification": {"missing_context": ["城市", "旅行偏好"], "response_goal": "先补齐城市和偏好，再制定一日方案。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "实用、具体、清晰", "capability_limits": ["不宣称实时查询景点营业信息"]},
+    "artifact": {"artifact_type": "plan_card", "schema_id": "travel_plan_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "plan_peripheral_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "plan_core_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "plan_local_step", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "plan_core_dependency", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我在杭州，想安排一天文化和美食结合的行程。"], "expected_behavior": "给出景点、路线和餐饮的一日计划。"},
+      "clarification": {"user_turns": ["帮我规划今天的旅行。"], "expected_behavior": "询问城市和旅行偏好。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "planning_graph_v2"
+  },
+  {
+    "scenario_id": "tool_planning_hiking_v2",
+    "condition": "tool",
+    "subcondition": "planning",
+    "topic_key": "hiking",
+    "system_prompt": "你是一个户外踏青规划助手。帮助用户规划短途踏青活动，包括目的地推荐、路线规划、装备建议、注意事项等。请先了解用户所在位置、出行人数、体力情况等，然后给出合适的踏青方案。回答要实用、安全第一，每次回复不超过150字。",
+    "display_title": "短途踏青规划",
+    "participant_brief": "请让 AI 根据位置、人数和体力规划安全的踏青路线。",
+    "required_context": ["所在位置", "出行人数", "体力情况"],
+    "clarification": {"missing_context": ["所在位置", "出行人数", "体力情况"], "response_goal": "先补齐安全相关信息，再提出路线方案。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "实用、谨慎、安全优先", "capability_limits": ["不宣称实时掌握路况或天气"]},
+    "artifact": {"artifact_type": "plan_card", "schema_id": "hiking_plan_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "hiking_peripheral_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "hiking_safety_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "hiking_local_step", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "hiking_safety_dependency", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我们两个人在杭州，体力一般，想安排半天轻松踏青。"], "expected_behavior": "给出路线、装备、风险和安全提醒。"},
+      "clarification": {"user_turns": ["周末想去踏青。"], "expected_behavior": "询问位置、人数和体力情况。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "planning_graph_v2"
+  },
+  {
+    "scenario_id": "human_planning_goalPlan_v2",
+    "condition": "human",
+    "subcondition": "planning",
+    "topic_key": "goalPlan",
+    "system_prompt": "你是一个贴心的目标规划伙伴。帮助用户制定学习、健身、考试等个人目标的计划。先了解用户的具体目标、时间安排和现状，然后给出切实可行的计划建议，并以鼓励的方式督促用户。语气要像朋友一样亲切，每次回复不超过150字。",
+    "display_title": "个人目标规划",
+    "participant_brief": "请让 AI 根据目标、时间和现状制定可执行计划。",
+    "required_context": ["具体目标", "时间安排", "当前状态"],
+    "clarification": {"missing_context": ["具体目标", "时间安排", "当前状态"], "response_goal": "先了解目标和现实约束，再给出计划。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "亲切、可执行、鼓励", "capability_limits": ["不作无法兑现的监督承诺"]},
+    "artifact": {"artifact_type": "plan_card", "schema_id": "goal_plan_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "plan_peripheral_fact", "centrality": "peripheral", "presentation": "assistant_text"},
+      "factual_major": {"target_kind": "goal_constraint_fact", "centrality": "core", "presentation": "assistant_text"},
+      "logic_minor": {"target_kind": "plan_local_step", "centrality": "peripheral", "presentation": "assistant_text"},
+      "logic_major": {"target_kind": "goal_core_dependency", "centrality": "core", "presentation": "assistant_text"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我准备考研，每天晚上有两小时，目前数学基础较弱。"], "expected_behavior": "给出符合时间和基础的可执行复习计划。"},
+      "clarification": {"user_turns": ["帮我定个学习计划。"], "expected_behavior": "询问目标、可用时间和当前状态。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "planning_graph_v2"
+  }
+]

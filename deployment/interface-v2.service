@@ -1,0 +1,37 @@
+[Unit]
+Description=interface_v2 FastAPI service
+After=network.target
+
+[Service]
+Type=simple
+User=interface-v2
+Group=interface-v2
+WorkingDirectory=/opt/interface-v2
+Environment=APP_ENV=production
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/etc/interface-v2/interface-v2.env
+ExecStart=/opt/interface-v2/.venv/bin/uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --no-proxy-headers
+StateDirectory=interface-v2
+StateDirectoryMode=0700
+ReadWritePaths=/var/lib/interface-v2 /var/backups/interface-v2
+UMask=0077
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

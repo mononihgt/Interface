@@ -1,0 +1,64 @@
+[
+  {
+    "scenario_id": "tool_execution_taskExecution_v2",
+    "condition": "tool",
+    "subcondition": "execution",
+    "topic_key": "taskExecution",
+    "system_prompt": "你是一个高效可靠的任务执行助手，擅长把用户提供的杂乱信息整理成清晰、可检查的结构化结果。面对日程、表格、清单等目标明确的请求时，直接抽取日期、时间、地点、任务和备注，不编造材料外信息；如用户要求修改，按最新要求更新结果。回答要清晰、直接、可落地，每次回复不超过150字。",
+    "display_title": "信息整理执行",
+    "participant_brief": "请提供需要整理为日期、时间、地点、任务和备注的原始材料。",
+    "required_context": ["需要整理的原始材料"],
+    "clarification": {"missing_context": ["原始材料"], "response_goal": "要求用户提供具体材料，不生成示例替代结果。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "清晰、直接、可检查", "capability_limits": ["只抽取用户材料", "不得编造日期、时间、地点或任务"]},
+    "artifact": {"artifact_type": "table", "schema_id": "schedule_table_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "simulated_ui", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "schedule_peripheral_field", "centrality": "peripheral", "presentation": "simulated_ui"},
+      "factual_major": {"target_kind": "schedule_core_field", "centrality": "core", "presentation": "simulated_ui"},
+      "logic_minor": {"target_kind": "schedule_local_dependency", "centrality": "peripheral", "presentation": "simulated_ui"},
+      "logic_major": {"target_kind": "schedule_order", "centrality": "core", "presentation": "simulated_ui"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["明天9点到办公室交材料，11:20去三楼会议室确认投影。"], "expected_behavior": "只按材料生成合法日程表。"},
+      "clarification": {"user_turns": ["帮我整理成表格。"], "expected_behavior": "要求用户提供需要整理的具体材料。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "execution_graph_v2"
+  },
+  {
+    "scenario_id": "human_execution_collaborativeExecution_v2",
+    "condition": "human",
+    "subcondition": "execution",
+    "topic_key": "collaborativeExecution",
+    "system_prompt": "你是一个善于协作的生活表达助手，擅长陪用户一起润色、整理和完成朋友圈文案、道歉消息等日常表达任务。面对用户提供的具体内容时，先理解场景、关系、情绪和想呈现的语气，再给出可直接使用的多个版本，并说明推荐理由。语气自然、有陪伴感，每次回复不超过150字。",
+    "display_title": "生活表达协作",
+    "participant_brief": "请提供需要撰写或修改的具体内容和希望呈现的语气。",
+    "required_context": ["具体内容", "场景或关系", "期望语气"],
+    "clarification": {"missing_context": ["具体内容", "期望语气"], "response_goal": "先了解内容、关系和语气，不直接生成空泛文案。"},
+    "tools": {"allowed": [], "forbidden": ["open_meteo", "web_search"]},
+    "response_policy": {"max_chars": 150, "tone": "自然、有陪伴感、可直接使用", "capability_limits": ["不得改变用户提供的核心事实"]},
+    "artifact": {"artifact_type": "copy_versions", "schema_id": "copy_versions_v1", "participant_visible": true},
+    "presentation": {"allowed_error_presentations": ["assistant_text", "simulated_ui", "system_failure"]},
+    "mutation_policy": {"rules": {
+      "factual_minor": {"target_kind": "copy_peripheral_fact", "centrality": "peripheral", "presentation": "simulated_ui"},
+      "factual_major": {"target_kind": "copy_core_fact", "centrality": "core", "presentation": "simulated_ui"},
+      "logic_minor": {"target_kind": "copy_local_reason", "centrality": "peripheral", "presentation": "simulated_ui"},
+      "logic_major": {"target_kind": "copy_recommendation", "centrality": "core", "presentation": "simulated_ui"},
+      "social_minor": {"target_kind": "assistant_tone", "centrality": "peripheral", "presentation": "assistant_text"},
+      "social_major": {"target_kind": "assistant_tone", "centrality": "core", "presentation": "assistant_text"},
+      "system_failure": {"target_kind": "system", "centrality": "none", "presentation": "system_failure"}
+    }},
+    "fixtures": {
+      "normal": {"user_turns": ["我临时有事爽约了朋友，想写一条真诚但不太沉重的道歉消息。"], "expected_behavior": "给出多个可用版本并说明推荐理由。"},
+      "clarification": {"user_turns": ["帮我改一段文案。"], "expected_behavior": "询问具体内容、使用场景和希望的语气。"}
+    },
+    "max_turns": 5,
+    "input_mode": "voice_only",
+    "graph": "execution_graph_v2"
+  }
+]
